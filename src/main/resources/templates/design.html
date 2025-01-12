@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Taco Design WebSite</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <h1>Design your Taco!</h1>
+    <img th:src="@{/images/TacoCloud.jpg}"/>
+    <form method="POST"  th:object="${design}">
+        <div th:if="${#fields.hasErrors()}">
+            <span class="validationError">
+                Please correct the prblems below and resubmit!
+            </span>
+        </div>
+        <div class="grid">
+            <div class="ingredient-group" id="wraps">
+                <h3>Design your wrap:</h3>
+                <!--/*@thymesVar id="wrap" type="org.daily.taco.Ingredient"*/-->
+                <div th:each="ingredient: ${wrap}">
+                    <input name="ingredients" type="checkbox" th:value="${ingredient.id}"/>
+                    <span th:text="${ingredient.name}">INGREDIENT</span>
+                </div>
+            </div>
+
+            <div class="ingredient-group" id="proteins">
+                <h3>Design your protein:</h3>
+                <!--/*@thymesVar id="protein" type="org.daily.taco.Ingredient"*/-->
+                <div th:each="ingredient: ${protein}">
+                    <input name="ingredients" type="checkbox" th:value="${ingredient.id}"/>
+                    <span th:text="${ingredient.name}">INGREDIENT</span>
+                </div>
+            </div>
+
+            <div class="ingredient-group" id="cheeses">
+                <h3>Design your cheese:</h3>
+                <!--/*@thymesVar id="cheese" type="org.daily.taco.Ingredient"*/-->
+                <div th:each="ingredient: ${cheese}">
+                    <input name="ingredients" type="checkbox" th:value="${ingredient.id}"/>
+                    <span th:text="${ingredient.name}">INGREDIENT</span>
+                </div>
+            </div>
+
+            <div class="ingredient-group" id="veggies">
+                <h3>Design your veggies:</h3>
+                <!--/*@thymesVar id="veggies" type="org.daily.taco.Ingredient"*/-->
+                <div th:each="ingredient: ${veggies}">
+                    <input name="ingredients" type="checkbox" th:value="${ingredient.id}"/>
+                    <span th:text="${ingredient.name}">INGREDIENT</span>
+                </div>
+            </div>
+
+            <div class="ingredient-group" id="sauces">
+                <h3>Design your sauce:</h3>
+                <!--/*@thymesVar id="sauce" type="org.daily.taco.Ingredient"*/-->
+                <div th:each="ingredient: ${sauce}">
+                    <input name="ingredients" type="checkbox" th:value="${ingredient.id}"/>
+                    <span th:text="${ingredient.name}">INGREDIENT</span>
+                </div>
+            </div>
+            <span th:if="${#fields.hasErrors('ingredients')}"
+                  th:errors="*{ingredients}">Ingredients Errors</span>
+
+            <h3>Name your Taco creation:</h3>
+            <input type="text" th:field="*{name}"/>
+            <span th:if="${#fields.hasErrors('name')}"
+                  th:errors="*{name}">Name Errors</span>
+            <br/>
+            <button>Submit your Taco</button>
+        </div>
+    </form>
+</body>
+</html>
