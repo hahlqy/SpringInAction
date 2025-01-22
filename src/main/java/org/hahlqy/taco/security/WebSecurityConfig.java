@@ -5,6 +5,7 @@ import org.hahlqy.taco.service.UserRepositoryUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
 import java.util.Base64;
@@ -86,5 +88,31 @@ public class WebSecurityConfig  {
     }
 
 
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        http
+                .authorizeHttpRequests((authorize) -> authorize
+                        //设置访问权限
+                        .requestMatchers("/design").hasAuthority("ROLE_USER")
+                        .requestMatchers("/","/**").permitAll()
+
+                ).formLogin(formLogin ->
+                        //设置登录配置
+                        formLogin
+                                .loginPage("/login")
+                                .loginProcessingUrl("/authenticate")
+                                .usernameParameter("username")
+                                .passwordParameter("password")
+                                .defaultSuccessUrl("/design")
+                                .permitAll()
+                ).logout(logout ->
+                        //设置登出
+                        logout
+                                .logoutUrl("/logout")
+                                .logoutSuccessUrl("/")
+                );
+        return http.build();
+    }
 
 }
