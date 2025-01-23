@@ -72,6 +72,8 @@
             <span th:if="${#fields.hasErrors('name')}"
                   th:errors="*{name}">Name Errors</span>
             <br/>
+<!--            设置Spring Security 的csrf设置-->
+<!--            <input type="hidden" name="_csrf" th:value="${_csrf.token}" >-->
             <button>Submit your Taco</button>
         </div>
     </form>

@@ -7,11 +7,17 @@ import org.hahlqy.taco.data.IngredientRepository;
 import org.hahlqy.taco.data.TacoRepository;
 import org.hahlqy.taco.vo.Order;
 import org.hahlqy.taco.vo.Taco;
+import org.hahlqy.taco.vo.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.endpoint.SecurityContext;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.support.SessionStatus;
 
 import java.util.Arrays;
 import java.util.List;
@@ -60,14 +66,63 @@ public class DesignTacoController {
         return ingredients.stream().filter(ingredient -> ingredient.getType() == type).collect(Collectors.toList());
     }
 
+    /**
+     * @AuthenticationPrincipal获取登录用户信息
+     * @param taco
+     * @param errors
+     * @param order
+     * @param user
+     * @return
+     */
+//    @PostMapping
+//    public String processDesign(@Valid @ModelAttribute("design") Taco taco, Errors errors,
+//                                @ModelAttribute("order") Order order ,@AuthenticationPrincipal User user) {
+//        if(errors.hasErrors()) {
+//            return "design";
+//        }
+//        log.info("processing taco: {}", taco);
+//        log.info("user: {}", user);
+//        Taco saved = tacoRepos.save(taco);
+//        order.setTaco(saved);
+//        return "redirect:/orders/current";
+//    }
+
+//    /**
+//     * Authentication获取登录用户信息
+//     * @param taco
+//     * @param errors
+//     * @param order
+//     * @return
+//     */
+//    @PostMapping
+//    public String processDesign(@Valid @ModelAttribute("design") Taco taco, Errors errors,
+//                                @ModelAttribute("order") Order order , SessionStatus status, Authentication auth) {
+//        if(errors.hasErrors()) {
+//            return "design";
+//        }
+//        log.info("processing taco: {}", taco);
+//        log.info("user: {}", auth.getPrincipal());
+//        Taco saved = tacoRepos.save(taco);
+//        order.setTaco(saved);
+//        return "redirect:/orders/current";
+//    }
+
+//    /**
+//     * SecurityContextHolder获取登录用户信息
+//     * @param taco
+//     * @param errors
+//     * @param order
+//     * @return
+//     */
     @PostMapping
     public String processDesign(@Valid @ModelAttribute("design") Taco taco, Errors errors,
-                                @ModelAttribute("order") Order order) {
+                                @ModelAttribute("order") Order order ) {
         if(errors.hasErrors()) {
             return "design";
         }
         log.info("processing taco: {}", taco);
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("user: {}", authentication.getPrincipal());
         Taco saved = tacoRepos.save(taco);
         order.setTaco(saved);
         return "redirect:/orders/current";
