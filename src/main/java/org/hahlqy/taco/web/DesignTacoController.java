@@ -1,15 +1,19 @@
 package org.hahlqy.taco.web;
 
 import jakarta.validation.Valid;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hahlqy.taco.Ingredient;
 import org.hahlqy.taco.data.IngredientRepository;
 import org.hahlqy.taco.data.TacoRepository;
+import org.hahlqy.taco.data.mybatis.TacoMapper;
 import org.hahlqy.taco.vo.Order;
 import org.hahlqy.taco.vo.Taco;
 import org.hahlqy.taco.vo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.SecurityContext;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +31,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/design")
 @SessionAttributes("order")
 @Slf4j
+@Setter
+@ConfigurationProperties(prefix = "taco.design")
 public class DesignTacoController {
 
     @Autowired
@@ -34,6 +40,12 @@ public class DesignTacoController {
 
     @Autowired
     private TacoRepository tacoRepos;
+    @Autowired
+    private TacoMapper tacoMapper;
+
+    private int pageSize;
+
+
 
 
     @GetMapping
@@ -126,6 +138,12 @@ public class DesignTacoController {
         Taco saved = tacoRepos.save(taco);
         order.setTaco(saved);
         return "redirect:/orders/current";
+    }
+
+    @GetMapping("/getTacos")
+    @ResponseBody
+    public List<Taco> getTacos() {
+        return tacoMapper.getTacoList(0,pageSize);
     }
 
 }
