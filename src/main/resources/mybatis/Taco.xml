@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.hahlqy.taco.data.mybatis.TacoMapper">
+    <resultMap id="taco" type="org.hahlqy.taco.vo.Taco">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="createAt" property="createAt"/>
+    </resultMap>
+    <insert id="insertTaco"
+            parameterType="org.hahlqy.taco.vo.Taco"
+            keyProperty="id"
+            useGeneratedKeys="true">
+        insert into taco
+        (name,createAt)
+        values
+        (#{name},#{createAt})
+    </insert>
+</mapper>

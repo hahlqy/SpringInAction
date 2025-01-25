@@ -77,7 +77,7 @@ public class WebSecurityConfig  {
     @Bean
     @Profile("prod")
     public PasswordEncoder passwordEncoder() {
-        System.out.println("开始注册自己使用的passwordEncoder");
+         System.out.println("开始注册自己使用的passwordEncoder");
        return  new PasswordEncoder() {
            @Override
            public String encode(CharSequence rawPassword) {

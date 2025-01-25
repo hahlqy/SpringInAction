@@ -13,4 +13,9 @@ public interface TacoMapper {
 
     @Select("select id,name from taco order by createAt desc  limit #{pageIndex},#{pageSize}")
     List<Taco> getTacoList(@Param("pageIndex") int pageIndex, @Param("pageSize") int pageSize);
+
+    @Select("select id,name from taco where id = #{id}")
+    Taco getTacoById(@Param("id") Long id);
+
+    void insertTaco(Taco taco);
 }
