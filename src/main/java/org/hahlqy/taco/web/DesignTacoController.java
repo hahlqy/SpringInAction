@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hahlqy.taco.Ingredient;
+import org.hahlqy.taco.config.OrderProp;
 import org.hahlqy.taco.data.IngredientRepository;
+import org.hahlqy.taco.data.OrderRepository;
 import org.hahlqy.taco.data.TacoRepository;
 import org.hahlqy.taco.data.mybatis.TacoMapper;
 import org.hahlqy.taco.vo.Order;
@@ -31,8 +33,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/design")
 @SessionAttributes("order")
 @Slf4j
-@Setter
-@ConfigurationProperties(prefix = "taco.design")
 public class DesignTacoController {
 
     @Autowired
@@ -43,7 +43,8 @@ public class DesignTacoController {
     @Autowired
     private TacoMapper tacoMapper;
 
-    private int pageSize;
+    @Autowired
+    private OrderProp orderProp;
 
 
 
@@ -143,7 +144,7 @@ public class DesignTacoController {
     @GetMapping("/getTacos")
     @ResponseBody
     public List<Taco> getTacos() {
-        return tacoMapper.getTacoList(0,pageSize);
+        return tacoMapper.getTacoList(0,orderProp.getPageSize());
     }
 
 }

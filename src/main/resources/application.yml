@@ -21,11 +21,11 @@ logging:
     name: Taco.log
     path: logs/
 
-taco:
-  design:
-    pageSize: ${PAGE_SIZE}
 
 mybatis:
   mapper-locations: classpath:/mybatis/*.xml
 server:
   port: 8080
+taco:
+  design:
+    page-size: 15
