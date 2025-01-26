@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.hateoas.RepresentationModel;
 
 
 import java.util.Date;
@@ -16,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class Taco {
+public class Taco extends RepresentationModel<Taco> {
     private Long id;
     private Date createAt;
     @NotNull

@@ -4,8 +4,11 @@ import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.hahlqy.taco.data.mybatis.TacoMapper;
 import org.hahlqy.taco.vo.Taco;
+import org.hahlqy.taco.vo.TacoModel;
+import org.hahlqy.taco.web.api.hateoas.TacoModelAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(path = "/api/design",
@@ -26,12 +32,29 @@ public class DesignTacoApiController {
 
 
     @GetMapping("/recent")
-    public List<Taco> recentTacos(){
-        return tacoMapper.getTacoList(0,12);
+    public CollectionModel<Taco> recentTacos(){
+
+        List<Taco> tacoList = tacoMapper.getTacoList(0, 5);
+        tacoList.forEach(taco->{
+            taco.add(linkTo(methodOn(DesignTacoApiController.class).getTacoById(taco.getId())).withSelfRel());
+        });
+        return CollectionModel.of(tacoList,linkTo(methodOn(DesignTacoApiController.class).recentTacos()).withRel("recent"));
+    }
+
+    @GetMapping("/recentTacoModel")
+    public CollectionModel<TacoModel> recentTacoModels(){
+
+        List<Taco> tacoList = tacoMapper.getTacoList(0, 5);
+        CollectionModel<TacoModel> collectionModel =
+                new TacoModelAssembler(DesignTacoApiController.class, TacoModel.class).toCollectionModel(tacoList);
+        collectionModel.add(
+                linkTo(methodOn(DesignTacoApiController.class).recentTacoModels()).withRel("recent")
+        );
+        return collectionModel;
     }
 
 
-    @GetMapping("/{id}")
+    @GetMapping("/getTacoById/{id}")
     public ResponseEntity<Taco> getTacoById(@PathVariable Long id){
         Optional<Taco> taco = Optional.ofNullable(tacoMapper.getTacoById(id));
         return taco.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
