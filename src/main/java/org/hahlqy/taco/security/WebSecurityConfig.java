@@ -99,7 +99,7 @@ public class WebSecurityConfig  {
                 .authorizeHttpRequests((authorize) -> authorize
                         //设置访问权限
                         .requestMatchers("/design").hasAuthority("ROLE_USER")
-                        .requestMatchers("/","/**").permitAll()
+                        .requestMatchers("/","/api/**").permitAll()
 
                 )
                 .formLogin(formLogin ->

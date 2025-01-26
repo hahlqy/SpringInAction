@@ -1,6 +1,7 @@
 package org.hahlqy.taco.data.mybatis;
 
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -18,4 +19,9 @@ public interface TacoMapper {
     Taco getTacoById(@Param("id") Long id);
 
     void insertTaco(Taco taco);
+
+    void updateTaco(Taco taco);
+
+    @Delete("delete from taco where id=#{id}")
+    void deleteTaco(@Param("id") Long id);
 }

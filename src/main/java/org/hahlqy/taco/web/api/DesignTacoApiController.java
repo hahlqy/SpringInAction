@@ -1,9 +1,11 @@
 package org.hahlqy.taco.web.api;
 
+import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.hahlqy.taco.data.mybatis.TacoMapper;
 import org.hahlqy.taco.vo.Taco;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/design",
+@RequestMapping(path = "/api/design",
         produces = "application/json")
 @CrossOrigin("*")
 @Slf4j
@@ -37,7 +39,7 @@ public class DesignTacoApiController {
     }
 
 
-    @PostMapping(value = "/insert",
+    @PostMapping(path = "/insert",
                 consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public Taco createTaco(@RequestBody Taco taco){
@@ -45,5 +47,38 @@ public class DesignTacoApiController {
         taco.setCreateAt(new Date());
         tacoMapper.insertTaco(taco);
         return taco;
+    }
+
+    @PutMapping(path = "/{designId}",
+                consumes="application/json")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Taco updateTaco(@PathVariable Long designId, @RequestBody Taco taco){
+        taco.setId(designId);
+        tacoMapper.updateTaco(taco);
+        return taco;
+    }
+
+
+    @PatchMapping(path = "/{designId}",
+            consumes="application/json")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Taco updateTacoDetail(@PathVariable Long designId, @RequestBody Taco taco){
+        Taco tacoById = tacoMapper.getTacoById(designId);
+        if(StringUtils.isNotBlank(taco.getName())){
+            tacoById.setName(taco.getName());
+        }
+        tacoMapper.updateTaco(tacoById);
+        return taco;
+    }
+
+
+    @DeleteMapping(path = "/{designId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTaco(@PathVariable Long designId){
+        try{
+            tacoMapper.deleteTaco(designId);
+        }catch(EmptyResultDataAccessException e){
+            log.info("Taco not found: {}", designId);
+        }
     }
 }

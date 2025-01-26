@@ -17,4 +17,7 @@
         values
         (#{name},#{createAt})
     </insert>
+    <update id="updateTaco" parameterType="org.hahlqy.taco.vo.Taco">
+        update taco set  name=#{name} where id = #{id}
+    </update>
 </mapper>
