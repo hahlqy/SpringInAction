@@ -24,4 +24,7 @@ public interface TacoMapper {
 
     @Delete("delete from taco where id=#{id}")
     void deleteTaco(@Param("id") Long id);
+
+    @Select("select count(1) from taco")
+    int countTaco();
 }

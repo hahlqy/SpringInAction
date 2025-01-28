@@ -37,8 +37,9 @@ public class DesignTacoApiController {
 
 
     @GetMapping("/recent")
-    public CollectionModel<Taco> recentTacos(){
-        List<Taco> tacoList = tacoMapper.getTacoList(0, 5);
+    public CollectionModel<Taco> recentTacos(@RequestParam int pageIndex,@RequestParam int pageSize) {
+        List<Taco> tacoList = tacoMapper.getTacoList(pageIndex, pageSize);
+        int recordSize = tacoMapper.countTaco();
         tacoList.forEach(taco -> {
             List<Ingredient> ingredientByTacoId = tacoIngredientMapper.findIngredientByTacoId(taco.getId());
             taco.setIngredients(
@@ -50,7 +51,19 @@ public class DesignTacoApiController {
         tacoList.forEach(taco->{
             taco.add(linkTo(methodOn(DesignTacoApiController.class).getTacoById(taco.getId())).withSelfRel());
         });
-        return CollectionModel.of(tacoList,linkTo(methodOn(DesignTacoApiController.class).recentTacos()).withRel("recent"));
+        CollectionModel<Taco> collectionModel = CollectionModel.of(tacoList,
+                linkTo(methodOn(DesignTacoApiController.class).recentTacos(pageIndex, pageSize)).withSelfRel());
+        if(pageIndex>0){
+            collectionModel.add(
+                    linkTo(methodOn(DesignTacoApiController.class).recentTacos(pageIndex-1,pageSize)).withRel("last")
+            );
+        }
+        if((pageIndex+1)*pageSize < recordSize){
+            collectionModel.add(
+                    linkTo(methodOn(DesignTacoApiController.class).recentTacos(pageIndex+1,pageSize)).withRel("next")
+            );
+        }
+        return collectionModel;
     }
 
     @GetMapping("/recentTacoModel")
