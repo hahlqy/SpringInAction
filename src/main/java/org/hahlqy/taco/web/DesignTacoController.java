@@ -1,31 +1,22 @@
 package org.hahlqy.taco.web;
 
 import jakarta.validation.Valid;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hahlqy.taco.Ingredient;
 import org.hahlqy.taco.config.OrderProp;
 import org.hahlqy.taco.data.IngredientRepository;
-import org.hahlqy.taco.data.OrderRepository;
 import org.hahlqy.taco.data.TacoRepository;
 import org.hahlqy.taco.data.mybatis.TacoMapper;
 import org.hahlqy.taco.vo.Order;
 import org.hahlqy.taco.vo.Taco;
-import org.hahlqy.taco.vo.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.endpoint.SecurityContext;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.support.SessionStatus;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 

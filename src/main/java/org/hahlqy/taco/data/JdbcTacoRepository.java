@@ -1,6 +1,5 @@
 package org.hahlqy.taco.data;
 
-import org.hahlqy.taco.Ingredient;
 import org.hahlqy.taco.vo.Taco;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

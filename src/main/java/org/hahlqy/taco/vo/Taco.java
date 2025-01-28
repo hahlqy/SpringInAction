@@ -1,6 +1,5 @@
 package org.hahlqy.taco.vo;
 
-
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -9,9 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.hateoas.RepresentationModel;
 
-
 import java.util.Date;
 import java.util.List;
+
 
 @Data
 @AllArgsConstructor
@@ -25,4 +24,5 @@ public class Taco extends RepresentationModel<Taco> {
     private String name;
     @Size(min = 1,message = "Your must choose at least 1 ingredient ")
     private List<String> ingredients;
+
 }

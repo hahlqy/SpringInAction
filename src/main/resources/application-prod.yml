@@ -23,6 +23,8 @@ logging:
 
 mybatis:
   mapper-locations: classpath:/mybatis/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 server:
   port: 8080
 taco:

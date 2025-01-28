@@ -4,7 +4,6 @@ package org.hahlqy.taco.web.api.hateoas;
 import org.hahlqy.taco.vo.Taco;
 import org.hahlqy.taco.vo.TacoModel;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.LinkRelation;
 import org.springframework.hateoas.server.core.SpringAffordanceBuilder;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 

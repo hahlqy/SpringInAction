@@ -2,7 +2,9 @@ package org.hahlqy.taco.web.api;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.hahlqy.taco.data.mybatis.TacoIngredientMapper;
 import org.hahlqy.taco.data.mybatis.TacoMapper;
+import org.hahlqy.taco.vo.Ingredient;
 import org.hahlqy.taco.vo.Taco;
 import org.hahlqy.taco.vo.TacoModel;
 import org.hahlqy.taco.web.api.hateoas.TacoModelAssembler;
@@ -29,11 +31,13 @@ public class DesignTacoApiController {
 
     @Autowired
     private TacoMapper tacoMapper;
+    @Autowired
+    private TacoIngredientMapper tacoIngredientMapper;
+
 
 
     @GetMapping("/recent")
     public CollectionModel<Taco> recentTacos(){
-
         List<Taco> tacoList = tacoMapper.getTacoList(0, 5);
         tacoList.forEach(taco->{
             taco.add(linkTo(methodOn(DesignTacoApiController.class).getTacoById(taco.getId())).withSelfRel());
@@ -43,7 +47,6 @@ public class DesignTacoApiController {
 
     @GetMapping("/recentTacoModel")
     public CollectionModel<TacoModel> recentTacoModels(){
-
         List<Taco> tacoList = tacoMapper.getTacoList(0, 5);
         CollectionModel<TacoModel> collectionModel =
                 new TacoModelAssembler(DesignTacoApiController.class, TacoModel.class).toCollectionModel(tacoList);
@@ -69,6 +72,9 @@ public class DesignTacoApiController {
         log.info("Taco processed: {}", taco);
         taco.setCreateAt(new Date());
         tacoMapper.insertTaco(taco);
+        taco.getIngredients().forEach(ingredient->{
+            tacoIngredientMapper.insertTacoIngredient(taco.getId(),ingredient);
+        });
         return taco;
     }
 

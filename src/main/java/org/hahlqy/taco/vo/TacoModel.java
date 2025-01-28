@@ -1,6 +1,7 @@
 package org.hahlqy.taco.vo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import org.springframework.hateoas.RepresentationModel;
 
@@ -8,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ToString
 public class TacoModel extends RepresentationModel<TacoModel> {
@@ -16,12 +18,11 @@ public class TacoModel extends RepresentationModel<TacoModel> {
 
     private Date createAt;
 
-    private List<String> ingredients;
+    private List<IngredientModel> ingredientModels;
 
 
     public TacoModel(Taco taco) {
         this.name = taco.getName();
-        this.ingredients = taco.getIngredients();
         this.createAt = taco.getCreateAt();
     }
 }
