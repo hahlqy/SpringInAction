@@ -6,6 +6,7 @@ import lombok.ToString;
 import org.hahlqy.taco.web.api.IngredientApiController;
 import org.hahlqy.taco.web.api.hateoas.IngredientModleAssembler;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.util.Date;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ToString
+@Relation(value = "taco",collectionRelation = "tacos")
 public class TacoModel extends RepresentationModel<TacoModel> {
 
     private String name;
