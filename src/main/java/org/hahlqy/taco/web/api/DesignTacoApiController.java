@@ -39,6 +39,14 @@ public class DesignTacoApiController {
     @GetMapping("/recent")
     public CollectionModel<Taco> recentTacos(){
         List<Taco> tacoList = tacoMapper.getTacoList(0, 5);
+        tacoList.forEach(taco -> {
+            List<Ingredient> ingredientByTacoId = tacoIngredientMapper.findIngredientByTacoId(taco.getId());
+            taco.setIngredients(
+                    ingredientByTacoId.stream()
+                            .map(Ingredient::getId)
+                            .toList()
+            );
+        });
         tacoList.forEach(taco->{
             taco.add(linkTo(methodOn(DesignTacoApiController.class).getTacoById(taco.getId())).withSelfRel());
         });
@@ -48,6 +56,14 @@ public class DesignTacoApiController {
     @GetMapping("/recentTacoModel")
     public CollectionModel<TacoModel> recentTacoModels(){
         List<Taco> tacoList = tacoMapper.getTacoList(0, 5);
+        tacoList.forEach(taco -> {
+            List<Ingredient> ingredientByTacoId = tacoIngredientMapper.findIngredientByTacoId(taco.getId());
+            taco.setIngredients(
+                    ingredientByTacoId.stream()
+                            .map(Ingredient::getId)
+                            .toList()
+            );
+        });
         CollectionModel<TacoModel> collectionModel =
                 new TacoModelAssembler(DesignTacoApiController.class, TacoModel.class).toCollectionModel(tacoList);
         collectionModel.add(

@@ -12,11 +12,13 @@ import org.springframework.hateoas.RepresentationModel;
 @NoArgsConstructor
 public class IngredientModel extends RepresentationModel<IngredientModel> {
 
+    private String id;
     private String name;
 
     private String type;
 
     public IngredientModel(Ingredient ingredient) {
+        this.id = ingredient.getId();
         this.name = ingredient.getName();
         this.type = ingredient.getType();
     }
