@@ -11,13 +11,13 @@ import org.hahlqy.taco.web.api.hateoas.TacoModelAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.net.URI;
+import java.util.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -33,6 +33,8 @@ public class DesignTacoApiController {
     private TacoMapper tacoMapper;
     @Autowired
     private TacoIngredientMapper tacoIngredientMapper;
+    @Autowired
+    private RestTemplate restTemplate;
 
 
 
@@ -101,9 +103,11 @@ public class DesignTacoApiController {
         log.info("Taco processed: {}", taco);
         taco.setCreateAt(new Date());
         tacoMapper.insertTaco(taco);
-        taco.getIngredients().forEach(ingredient->{
-            tacoIngredientMapper.insertTacoIngredient(taco.getId(),ingredient);
-        });
+        if(taco.getIngredients()!=null && !taco.getIngredients().isEmpty()){
+            taco.getIngredients().forEach(ingredient->{
+                tacoIngredientMapper.insertTacoIngredient(taco.getId(),ingredient);
+            });
+        }
         return taco;
     }
 
@@ -138,5 +142,60 @@ public class DesignTacoApiController {
         }catch(EmptyResultDataAccessException e){
             log.info("Taco not found: {}", designId);
         }
+    }
+
+    @GetMapping("/restAction/get")
+    public Taco restAction(Long tacoId){
+        return restTemplate.getForObject("http://localhost:8080/api/design/getTacoById/{id}"
+                , Taco.class, tacoId);
+    }
+
+    @GetMapping("/restAction/uri")
+    public Taco restAction2(Long tacoId){
+        Map<String,Object> params = new HashMap<>();
+        params.put("id",tacoId);
+        URI url = UriComponentsBuilder
+                .fromUriString("http://localhost:8080/api/design/getTacoById/{id}")
+                .build(params);
+
+        return restTemplate.getForObject(url,Taco.class);
+    }
+
+    @GetMapping("/restAction/getEntity")
+    public Taco restAction3(Long tacoId){
+        Map<String,Object> params = new HashMap<>();
+        params.put("id",tacoId);
+        URI url = UriComponentsBuilder
+                .fromUriString("http://localhost:8080/api/design/getTacoById/{id}")
+                .build(params);
+
+        ResponseEntity<Taco> entity = restTemplate.getForEntity(url, Taco.class);
+        log.info("Taco: {}", entity);
+
+        return entity.getBody();
+    }
+
+    @PutMapping(path = "/restAction/put/{designTacoId}",
+                consumes = "application/json")
+    public void restAction4(@PathVariable Long designTacoId, @RequestBody Taco taco){
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Taco> tacoHttpEntity = new HttpEntity<>(taco, httpHeaders);
+        restTemplate.put("http://localhost:8080/api/design/{id}"
+                , tacoHttpEntity, designTacoId);
+    }
+
+    @DeleteMapping("/restAction/{tacoId}")
+    public void restAction5(@PathVariable Long tacoId){
+        restTemplate.delete("http://localhost:8080/api/design/{id}"
+                , tacoId );
+    }
+
+    @PostMapping("/restAction/insert")
+    public Taco insertRestAction(@RequestBody Taco taco){
+        Taco taco1 = restTemplate.postForObject("http://localhost:8080/api/design/insert",
+                taco, Taco.class);
+        return taco1;
+
     }
 }
