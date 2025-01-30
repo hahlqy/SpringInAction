@@ -10,13 +10,18 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hahlqy.taco.vo.Taco;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Order {
+public class Order implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private Date createAt;
     @NotBlank(message = "Name is required")

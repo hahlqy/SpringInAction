@@ -11,6 +11,11 @@ spring:
       schema-locations: classpath:data/data.sql
   thymeleaf:
     prefix: classpath:/templates/
+  artemis:
+    broker-url: tcp://localhost:61616
+    mode: native
+    user: tacoweb
+    password: Aa12346
 
 logging:
   level:
