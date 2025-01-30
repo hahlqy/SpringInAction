@@ -2,6 +2,7 @@ package org.hahlqy.taco.vo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hahlqy.taco.web.api.IngredientApiController;
 import org.hahlqy.taco.web.api.hateoas.IngredientModleAssembler;
@@ -16,6 +17,7 @@ import java.util.List;
 @Data
 @ToString
 @Relation(value = "taco",collectionRelation = "tacos")
+@NoArgsConstructor
 public class TacoModel extends RepresentationModel<TacoModel> {
 
     private String name;

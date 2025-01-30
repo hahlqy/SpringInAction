@@ -9,8 +9,11 @@ import org.hahlqy.taco.vo.Taco;
 import org.hahlqy.taco.vo.TacoModel;
 import org.hahlqy.taco.web.api.hateoas.TacoModelAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.client.Traverson;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -88,6 +91,7 @@ public class DesignTacoApiController {
     }
 
 
+
     @GetMapping("/getTacoById/{id}")
     public ResponseEntity<Taco> getTacoById(@PathVariable Long id){
         Optional<Taco> taco = Optional.ofNullable(tacoMapper.getTacoById(id));
@@ -161,19 +165,7 @@ public class DesignTacoApiController {
         return restTemplate.getForObject(url,Taco.class);
     }
 
-    @GetMapping("/restAction/getEntity")
-    public Taco restAction3(Long tacoId){
-        Map<String,Object> params = new HashMap<>();
-        params.put("id",tacoId);
-        URI url = UriComponentsBuilder
-                .fromUriString("http://localhost:8080/api/design/getTacoById/{id}")
-                .build(params);
 
-        ResponseEntity<Taco> entity = restTemplate.getForEntity(url, Taco.class);
-        log.info("Taco: {}", entity);
-
-        return entity.getBody();
-    }
 
     @PutMapping(path = "/restAction/put/{designTacoId}",
                 consumes = "application/json")
@@ -198,4 +190,39 @@ public class DesignTacoApiController {
         return taco1;
 
     }
+
+    @GetMapping("/traverson/getTacoById")
+    public Taco traversonTaco(){
+        Traverson traverson =
+                new Traverson(URI.create("http://localhost:8080/api/design/getTacoModelById"), MediaType.APPLICATION_JSON);
+        traverson.setRestOperations(restTemplate);
+        ResponseEntity<Taco> entity = traverson.follow()
+                .toEntity(Taco.class);
+        return null;
+    }
+
+    @GetMapping("/restAction/getEntity")
+    public Taco restAction3(Long tacoId){
+        Map<String,Object> params = new HashMap<>();
+        params.put("id",tacoId);
+        URI url = UriComponentsBuilder
+                .fromUriString("http://localhost:8080/api/design/getTacoModelById")
+                .build(params);
+
+        ResponseEntity<Taco> entity = restTemplate.exchange("http://localhost:8080/api/design/getTacoModelById", HttpMethod.GET,
+                new HttpEntity<>(MediaTypes.HAL_JSON), Taco.class);
+//        ResponseEntity<Taco> entity = restTemplate.getForEntity(url, Taco.class);
+        log.info("Taco: {}", entity);
+
+        return entity.getBody();
+    }
+
+    @GetMapping("/getTacoModelById")
+    public TacoModel getTacoModelById(){
+        Long id = 8L;
+        Optional<Taco> taco = Optional.ofNullable(tacoMapper.getTacoById(id));
+        return taco.map(value -> new TacoModel(value).add(linkTo(methodOn(DesignTacoApiController.class).getTacoModelById()).withSelfRel()))
+                .orElse(null);
+    }
+
 }
