@@ -1,8 +1,7 @@
 package org.hahlqy.taco.service.impl;
 
 
-import jakarta.jms.JMSException;
-import jakarta.jms.Message;
+
 import org.hahlqy.taco.service.OrderReceiver;
 import org.hahlqy.taco.vo.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,7 @@ public class JmsOrderReceiver implements OrderReceiver {
 
     @Override
     public Order receiveOrder() {
-        return (Order) jmsTemplate.receiveAndConvert("tacoCloud.convert.order.queue");
+        return (Order) jmsTemplate.receiveAndConvert(
+                "tacoCloud.convert.order.queue");
     }
 }
