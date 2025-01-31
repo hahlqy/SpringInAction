@@ -5,4 +5,6 @@ import org.hahlqy.taco.vo.Order;
 public interface OrderMessageService {
 
     void sendOrder(Order order);
+
+    String sendOrderWithSource(Order order);
 }
